@@ -12,26 +12,26 @@
   "aboutImg": "img/IMG_5519.jpg",
   "types": {
     "physical": {
-      "label": "Prints",
+      "label": "Editions",
       "btn": "Purchase Print",
       "ord": "Order Print",
       "ships": true,
-      "intro": "Archival pigment prints on cotton rag paper, signed and numbered. Ships in 3–5 business days.",
-      "label_zh": "相片",
+      "intro": "Archival pigment prints on cotton rag paper, signed and numbered.",
+      "label_zh": "實體作品",
       "btn_zh": "購買相片",
       "ord_zh": "訂購相片",
-      "intro_zh": "以藝術微噴搭配棉質相紙輸出，每張皆有簽名與編號。付款確認後 3–5 個工作天內寄出。"
+      "intro_zh": "以藝術微噴搭配棉質相紙輸出，每張皆有簽名與編號。"
     },
     "digital": {
       "label": "Digital Files",
       "btn": "Purchase Download",
       "ord": "Order Download",
       "ships": false,
-      "intro": "High-resolution files delivered by email after payment is confirmed. Personal use licence.",
+      "intro": "High-resolution files delivered by email. Personal use licence only.",
       "label_zh": "數位檔案",
       "btn_zh": "購買下載檔",
       "ord_zh": "訂購下載檔",
-      "intro_zh": "高解析度檔案，確認付款後以電子郵件寄送，僅限個人使用授權。"
+      "intro_zh": "高解析度檔案，以電子郵件寄送，僅限個人使用授權。"
     }
   },
   "about": {

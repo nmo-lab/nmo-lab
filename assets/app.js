@@ -43,7 +43,7 @@ function setImg(im, src, i) {
 
 /* ---------- 1. 設定與儲存 ---------- */
 const TYPES = SHOP.types && Object.keys(SHOP.types).length ? SHOP.types : {
-  physical: { label: "Prints", btn: "Purchase Print", ord: "Order Print", ships: true },
+  physical: { label: "Editions", btn: "Purchase Print", ord: "Order Print", ships: true },
   digital: { label: "Digital Files", btn: "Purchase Download", ord: "Order Download", ships: false },
 };
 const TYPE_KEYS = Object.keys(TYPES);
@@ -267,7 +267,7 @@ function buildProject(s) {
   curProj = s.si;
   const v = $("#v-project"); v.innerHTML = "";
   const pl = $("#pline");
-  pl.innerHTML = `<span></span> <span class="sc">DATE</span> ${esc(s.date)} — Images (${s.items.length} …) <button type="button" aria-label="Info">${PLUS}</button>`;
+  pl.innerHTML = `<span></span> <span class="sc">DATE</span> ${esc(s.date)} — Images (${s.items.length}) <button type="button" aria-label="Info">${PLUS}</button>`;
   pl.children[0].textContent = s.title;
   /* 原本這顆按鈕是展開系列說明（s.note）；現改為收合／展開下方縮圖。要恢復說明功能，可重新啟用下面這段：
   if (s.note) { const n = el("p", "pnote"); n.hidden = true; n.textContent = s.note; v.appendChild(n); ... } */
@@ -315,7 +315,7 @@ function pick(n) {
   T("#pv-n", `${pad(n + 1)}/${all.length}`); T("#pv-c", `${w.title}, ${w.sname}, ${w.idx}`);
   const im = $("#pv-img"); im.alt = w.title; im.style.cursor = "pointer"; im.onclick = () => go("/series/" + w.slug + "?w=" + encodeURIComponent(w.id)); im.onerror = () => { im.onerror = null; im.src = ph(n, n % 3 === 2); };
   im.src = (w.thumb || w.img) || ph(n, n % 3 === 2);
-  T("#pv-p", [w.priceLabel, statusText(w)].filter(Boolean).join(" · "));
+  T("#pv-p", [w.priceLabel, statusText(w)].filter(Boolean).join(" · ")); $("#pv-p").classList.toggle("req", w.priceLabel === "Price on request");
   const a = $("#pv-a"); a.innerHTML = ""; a.append(buyBtn(w), detailBtn(w));
 }
 if (all.length) pick(0);
@@ -325,8 +325,10 @@ function printCard(w) {
   const f = el("figure"); const tile = el("div", "tile " + (w.height > w.width ? "p" : "l")); const im = mk(w); tile.appendChild(im); f.appendChild(tile);
   const c = el("figcaption", "", `<span class="bn"></span><div class="tt2"></div><div class="mute sp"></div><div class="pr"></div><div class="pacts"></div>`);
   c.children[0].textContent = w.no; c.children[1].textContent = w.title;
-  c.children[2].textContent = [w.spec, statusText(w)].filter(Boolean).join(" · ");
-  c.children[3].textContent = w.priceLabel;
+  /* 規格裡已寫「Edition of N」時，狀態只顯示剩餘數量，避免同一行重複 */
+  const st = w.status === "available" && w.edition != null && /edition of\s*\d+/i.test(w.spec || "") ? `${w.remaining} remaining` : statusText(w);
+  c.children[2].textContent = [w.spec, st].filter(Boolean).join(" · ");
+  c.children[3].textContent = w.priceLabel; c.children[3].classList.toggle("req", w.priceLabel === "Price on request");
   c.children[4].append(buyBtn(w), detailBtn(w));
   f.appendChild(c); return f;
 }
@@ -404,7 +406,7 @@ function openSheetUI(w) {
 function syncSheet() {
   const w = cur; if (!w) return;
   const opt = +$("#s-opt").value || 0, buyable = canBuy(w);
-  T("#s-price", w.options.length ? money(unit(w, opt)) : w.priceLabel);
+  T("#s-price", w.options.length ? money(unit(w, opt)) : w.priceLabel); $("#s-price").classList.toggle("req", !w.options.length && w.priceLabel === "Price on request");
   const inBag = bag.some((l) => l.id === w.id && (l.opt || 0) === opt);
   const b = $("#s-bag"); b.hidden = !buyable; b.textContent = inBag ? "View Bag" : "Add to Bag";
   const q = $("#s-enq"); q.hidden = buyable; q.href = enquireURL(w);
@@ -442,19 +444,19 @@ function importSheet(r) {
 function renderSheetPage() {
   const v = $("#v-sheet"); v.innerHTML = "";
   const items = folder.map(byId).filter(Boolean);
-  const inner = el("div", "shopv", `<h1 class="vh up">${esc(SAVED)} Works (${items.length})</h1>
-    <p class="vnote serif">Works you save for later are kept on this device. Use Copy Link to open the same selection on another device, or download it as a contact sheet (PDF).<br>Ready to buy? Add works to your Bag.</p>`);
+  const inner = el("div", "shopv", `<h1 class="vh up">${esc(SAVED)} (${items.length})</h1>
+    <p class="vnote serif">Works you save for later are kept on this device. Use Copy Link to open the same selection on another device, or download it as a contact sheet (PDF).</p>`);
   v.appendChild(inner);
   if (!items.length) {
     inner.appendChild(el("p", "vnote serif", "Nothing saved yet. Open any work and choose Save for Later."));
-    const a = el("a", "buy lnk", "Browse Prints"); a.href = "#/prints"; inner.appendChild(a); return;
+    const a = el("a", "buy lnk", "Continue Browsing"); a.href = "#/prints"; inner.appendChild(a); return;
   }
   const act = el("div", "act tools");
   const mkb = (label, fn) => { const b = el("button", "", esc(label)); b.type = "button"; b.onclick = fn; act.appendChild(b); return b; };
   mkb("Copy Link", () => copyText(location.origin + location.pathname + "#/sheet?i=" + encodeURIComponent(folder.join(",")), "Link copied"));
   mkb("Contact Sheet (PDF)", () => printSheet(items));
   const em = el("a", "", "Enquire by Email");
-  em.href = "mailto:" + SHOP.email + "?subject=" + encodeURIComponent("Enquiry about saved works") + "&body=" + encodeURIComponent(items.map((w) => `${w.idx} ${w.title} (${w.priceLabel})`).join("\n"));
+  em.href = "mailto:" + SHOP.email + "?subject=" + encodeURIComponent("Enquiry about saved") + "&body=" + encodeURIComponent(items.map((w) => `${w.idx} ${w.title} (${w.priceLabel})`).join("\n"));
   act.appendChild(em);
   mkb("Clear", () => { folder = []; saveFolder(); renderSheetPage(); });
   inner.appendChild(act);
@@ -488,7 +490,7 @@ function shopView(id, title) {
 }
 const noteHTML = () => {
   const z = ZONES.find((x) => x.freeOver != null);
-  return z ? `Free shipping to ${esc(z.label)} on prints over ${money(z.freeOver)}.` : "";
+  return z ? `Free shipping to ${esc(z.label)} on editions over ${money(z.freeOver)}.` : "";
 };
 function renderBag() {
   bag = bag.filter((l) => canBuy(byId(l.id))); saveBag();
@@ -502,9 +504,9 @@ function renderBag() {
   };
   if (!bag.length) {
     const em = el("div", "empty"); inner.appendChild(em);
-    em.appendChild(el("p", "vnote serif", "Your bag is empty. Pick a print or digital file and it will wait here until you check out."));
+    em.appendChild(el("p", "vnote serif", "Your bag is empty."));
     const act = el("div", "act");
-    const a1 = el("a", "buy", "Browse Prints"); a1.href = "#/prints"; act.appendChild(a1);
+    const a1 = el("a", "buy", "Continue Browsing"); a1.href = "#/prints"; act.appendChild(a1);
     if (folder.length) { const a2 = el("a", "", `${esc(SAVED)} (${folder.length})`); a2.href = "#/sheet"; act.appendChild(a2); }
     em.appendChild(act);
     shelf(em, "Available now");
@@ -681,7 +683,7 @@ function renderOrder(ref) {
 
 /* ---------- 6. 路由與固定導覽（Header / Back / Dock / Top 永遠可見） ---------- */
 const VIEWS = ["work", "project", "archive", "prints", "about", "sheet", "bag", "checkout", "order"];
-const TITLES = { "": "Work", index: "Index", archive: "Archive", prints: "Prints", about: "About", sheet: "Saved", bag: "Bag", checkout: "Checkout", order: "Order" };
+const TITLES = { "": "Work", index: "Index", archive: "Archive", prints: "Shop", about: "About", sheet: "Saved", bag: "Bag", checkout: "Checkout", order: "Order" };
 let curKey = null, baseHash = "#/", navFlag = false, depth = 0, curTop = "";
 const scrollMap = {};
 history.scrollRestoration = "manual";
@@ -765,7 +767,7 @@ document.addEventListener("click", (e) => {
 addEventListener("hashchange", onRoute);
 
 /* Dock：永遠固定在畫面底部 */
-const TABS = [["about", "About", "/about"], ["work", "Work", "/"], ["archive", "Archive", "/archive"], ["sheet", "Saved", "/sheet"], ["prints", "Prints", "/prints"], ["bag", "Bag", "/bag"]];
+const TABS = [["about", "About", "/about"], ["work", "Work", "/"], ["archive", "Archive", "/archive"], ["sheet", "Saved", "/sheet"], ["prints", "Shop", "/prints"], ["bag", "Bag", "/bag"]];
 const dock = $("#dock");
 TABS.forEach(([k, l, p], i) => {
   const b = el("button"); b.type = "button"; b.dataset.k = k; b.dataset.l = l;

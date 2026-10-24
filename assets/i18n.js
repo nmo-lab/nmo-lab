@@ -30,12 +30,12 @@
   /* ---------- 2. 介面字典（英文 → 繁體中文） ---------- */
   const EXACT = {
     /* 頂欄／導覽（洽詢另外處理：手機版維持英文） */
-    "Overview": "總覽", "Index": "索引", "Work": "作品", "Archive": "典藏", "Prints": "商店",
+    "Overview": "總覽", "Index": "索引", "Work": "作品", "Archive": "典藏", "Shop": "商品", "Editions": "實體作品",
     "Digital Files": "數位檔案", "About": "關於", "Bag": "購物車", "Saved": "收藏", "Saved ✓": "已收藏", "Save": "收藏",
     "Home": "回首頁", "Back": "返回", "Main": "主選單", "Series": "系列", "Product type": "商品類型", "Info": "說明",
     "Back to top": "回到頂端", "Close": "關閉", "Language": "語言",
     /* 頁尾 */
-    "Newsletter": "電子報", "Subscribe to The Dispatch: new work, print releases, and the notes behind the pictures.": "訂閱《Dispatch》，第一時間收到新作、相片上架與創作筆記。",
+    "Newsletter": "電子報", "Subscribe to The Dispatch: new work, shop updates, and the notes behind the pictures.": "訂閱《Dispatch》，第一時間收到新作、商品上架與創作筆記。",
     "Email": "電子郵件", "Submit": "訂閱",
     /* 作品卡／按鈕 */
     "Details": "查看詳情", "Add to Bag": "加入購物車", "In Bag · View": "已加入・查看購物車", "View Bag": "查看購物車",
@@ -48,14 +48,13 @@
     "Added to Bag": "已加入購物車", "Saved for later": "已加入收藏", "Link copied": "已複製連結", "Copied": "已複製",
     "Limited to one per order": "此作品每筆訂單限購 1 件", "Order summary copied": "已複製訂單內容",
     /* 收藏頁 */
-    "Works you save for later are kept on this device. Use Copy Link to open the same selection on another device, or download it as a contact sheet (PDF).": "收藏的作品會保存在這台裝置上。想在其他裝置查看，可以用「複製連結」；也能下載成縮圖總覽（PDF）。",
-    "Ready to buy? Add works to your Bag.": "決定要買了嗎？把作品加入購物車就可以結帳。",
+    "Works you save for later are kept on this device. Use Copy Link to open the same selection on another device, or download it as a contact sheet (PDF).": "收藏的作品會保存在這台裝置上。使用「複製連結」可在其他裝置查看；點選「縮圖總覽（PDF）」可下載收藏清單。",
     "Nothing saved yet. Open any work and choose Save for Later.": "目前還沒有收藏的作品。看到喜歡的，點「加入收藏」就會放在這裡。",
-    "Browse Prints": "逛逛相片", "Copy Link": "複製連結", "Contact Sheet (PDF)": "縮圖總覽（PDF）", "Enquire by Email": "來信詢問", "Clear": "全部清除",
+    "Copy Link": "複製連結", "Contact Sheet (PDF)": "縮圖總覽（PDF）", "Enquire by Email": "來信詢問", "Clear": "全部清除",
     /* Bag */
-    "Your bag is empty. Pick a print or digital file and it will wait here until you check out.": "購物車目前是空的。挑選喜歡的相片或數位檔，會先放在這裡，等你準備好再結帳。",
+    "Your bag is empty.": "購物車是空的。",
     "Available now": "現正販售", "Add more": "再看看其他作品", "Order summary": "訂單摘要", "Subtotal": "商品小計", "Shipping": "運費",
-    "Calculated at checkout": "結帳時計算", "None (digital)": "免運費（數位商品）", "Checkout": "結帳", "Continue Browsing": "繼續逛逛",
+    "Calculated at checkout": "結帳時計算", "None (digital)": "免運費（數位商品）", "Checkout": "結帳", "Continue Browsing": "繼續瀏覽",
     "Limited editions are held for you once your order request is confirmed. You will not be charged at this step.": "訂單確認後，我們會為你保留限量作品。這個步驟不會收費。",
     "Decrease": "減少", "Increase": "增加", "Decrease quantity (removes the item at 1)": "減少數量（剩 1 件時會移除商品）",
     /* Checkout */
@@ -79,10 +78,9 @@
   };
   const PATTERNS = [
     [/^Saved \((\d+)\)$/, (m) => `收藏 (${m[1]})`],
-    [/^Saved Works \((\d+)\)$/, (m) => `收藏的作品 (${m[1]})`],
     [/^Bag \((\d+)\)$/, (m) => `購物車 (${m[1]})`],
     [/^Order summary \((\d+)\)$/, (m) => `訂單摘要 (${m[1]})`],
-    [/^Images \((\d+) …\)$/, (m) => `圖片 (${m[1]} …)`],
+    [/^Images \((\d+)\)$/, (m) => `共 ${m[1]} 張`],
     [/^Edition of (\d+)$/, (m) => `限量 ${m[1]} 份`],
     [/^(\d+) remaining$/, (m) => `尚餘 ${m[1]} 份`],
     [/^Edition of (\d+) · (\d+) remaining$/, (m) => `限量 ${m[1]} 份・尚餘 ${m[2]} 份`],
@@ -91,7 +89,7 @@
     [/^View series (.+)$/, (m) => `查看系列：${m[1]}`],
     [/^(\d+) works? added to (.+)$/, (m) => `已將 ${m[1]} 件作品加入${tr(m[2])}`],
     [/^(.+) \+ shipping$/, (m) => `${m[1]} + 運費`],
-    [/^Free shipping to (.+) on prints over (.+)\.$/, (m) => `相片訂單滿 ${m[2]}，${m[1]}免運費。`],
+    [/^Free shipping to (.+) on editions over (.+)\.$/, (m) => `實體作品訂單滿 ${m[2]}，${m[1]}免運費。`],
     [/^© (\d+) NMO-LAB\. All rights reserved\.$/, (m) => `© ${m[1]} NMO-LAB 版權所有`],
     [/^(.*?) We reply within (.+) to confirm availability and send payment instructions\.$/, (m) => `${tr(m[1])}我們會在 ${tr(m[2])}內回覆，確認庫存並提供付款方式。`],
     [/^Thank you, (.+)\. A copy of this request is kept on this device\. We will email (.+) within (.+)\.$/, (m) => `謝謝你的訂購，${m[1]}。這份訂單的副本已保存在這台裝置上，我們會在 ${tr(m[3])}內寄信到 ${m[2]}。`],
@@ -107,11 +105,15 @@
     if (sep) { const parts = s.split(sep), t = parts.map(tr); if (t.some((x, i) => x !== parts[i])) return t.join(sep); }
     return s;
   }
+  /* 中文標點：含中文的句子裡，英文用的「 · 」換成「・」，中文字後的說明括號換成全形（數量如「收藏 (2)」維持半形） */
+  const CJK = /[\u3400-\u9fff]/;
+  const zhPunct = (t) => (lang !== "zh" || !CJK.test(t) ? t
+    : t.replace(/ · /g, "・").replace(/([\u3400-\u9fff）])\s?\(([^()]*[^\d\s()][^()]*)\)/g, "$1（$2）"));   /* 純數字的數量 (2) 維持半形 */
   const trNode = (n) => {
     const v = n.nodeValue; if (!v) return;
     if (lang === "zh" && v.trim() === "." && n.parentNode && n.parentNode.closest && n.parentNode.closest("#co-msg")) { n.nodeValue = "。"; return; }
     if (!/[A-Za-z]/.test(v)) return;
-    const m = /^(\s*)([\s\S]*?)(\s*)$/.exec(v), r = tr(m[2]);
+    const m = /^(\s*)([\s\S]*?)(\s*)$/.exec(v), r = zhPunct(tr(m[2]));
     if (r !== m[2]) n.nodeValue = m[1] + r + m[3];
   };
   const ATTRS = ["aria-label", "placeholder", "title", "alt"];

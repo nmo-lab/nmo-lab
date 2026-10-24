@@ -626,7 +626,14 @@ html{scrollbar-gutter:stable}
 .hd .lang span{color:var(--mute)}
 
 /* ===== 中文字型：無襯線與等寬一律思源黑體；原本用襯線體的標題／說明改用思源宋體（英文版的 EB Garamond 對應位置） ===== */
-:root[lang="zh-Hant"]{--sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;--serif:"Noto Serif TC","Songti TC","PMingLiU",serif;--mono:var(--sans)}
+:root[lang="zh-Hant"]{
+  /* 英文字母與數字沿用英文版字體（Inter／EB Garamond／IBM Plex Mono），漢字與全形標點自動落到思源黑體／宋體 */
+  --sans:"Inter","Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --serif:"EB Garamond","Noto Serif TC","Songti TC","PMingLiU",serif;
+  --mono:"IBM Plex Mono","Noto Sans TC",ui-monospace,monospace}
+/* 頁首的 NMO-LAB、Enquiries、Email、EN 與英文版完全相同 */
+:root[lang="zh-Hant"] .hd #name,:root[lang="zh-Hant"] #enq,:root[lang="zh-Hant"] #mail{font-family:"Inter",system-ui,sans-serif;letter-spacing:inherit}
+:root[lang="zh-Hant"] .hd.up{letter-spacing:.03em;font-weight:500}
 /* 洽詢：手機版維持英文 Enquiries，電腦版才顯示中文 */
 .enq-zh{display:none}
 @media(min-width:760px){.enq-en{display:none}.enq-zh{display:inline}}
@@ -680,11 +687,32 @@ html{scrollbar-gutter:stable}
 :root[lang="zh-Hant"] .ovt .tt,:root[lang="zh-Hant"] .ovt .rm,
 :root[lang="zh-Hant"] .sel .r,:root[lang="zh-Hant"] .sel .r button,:root[lang="zh-Hant"] .sel .rm{font-family:var(--sans);font-weight:400}
 :root[lang="zh-Hant"] .vs{font-weight:400;letter-spacing:.04em}
-/* 中文版：價格不用粗體（中文旁邊的 600 粗體數字太重） */
-:root[lang="zh-Hant"] .pr,:root[lang="zh-Hant"] .cp,:root[lang="zh-Hant"] .lp,:root[lang="zh-Hant"] .pvp,
-:root[lang="zh-Hant"] .pfig .pr,:root[lang="zh-Hant"] .srow,:root[lang="zh-Hant"] .srow.tot{font-weight:400}
+/* 中文版價格：數字已改用英文版字體 Inter，恢復與英文版相同的粗體 */
 
 /* 中文版：作品名稱／系列名稱與 Prints 說明文字（.pintro）同一種字體（思源宋體）；羅馬數字與「看整個系列」小標維持黑體 */
 :root[lang="zh-Hant"] .ovt .tt,:root[lang="zh-Hant"] .sel .r button,
-:root[lang="zh-Hant"] .pg .tt2,:root[lang="zh-Hant"] .pcap .tt2,:root[lang="zh-Hant"] #pline>span:first-child,
+:root[lang="zh-Hant"] .pg .tt2,:root[lang="zh-Hant"] .pcap .tt2,
 :root[lang="zh-Hant"] .bt,:root[lang="zh-Hant"] .sheet h3{font-family:var(--serif);font-weight:400}
+
+/* ===== 閱讀順暢度 ===== */
+/* 段落最後一行不要只剩一兩個字（中英文都適用；不支援的瀏覽器會忽略） */
+p,.vnote,.sp,.pintro,.bs,#s-desc,.tx p,.ab p{text-wrap:pretty}
+/* 中文版頁尾電子報說明放寬一點，避免「記。」單獨掉到第二行 */
+:root[lang="zh-Hant"] footer p{max-width:32em!important}
+
+/* 中文版 Overview 系列名稱用黑體（不用宋體） */
+:root[lang="zh-Hant"] .ovt .tt{font-family:var(--sans)}
+/* 頁尾：版權文字與時間戳記垂直置中對齊（時間那一欄有 Top 按鈕，比較高） */
+footer .fl{display:flex;align-items:center}
+
+/* 中文版：「價格請來信洽詢」是文字不是數字，不用粗體 */
+:root[lang="zh-Hant"] .req{font-weight:400}
+/* 中文版 Overview 系列名稱字級與 Index 上方同名按鈕一致（電腦 13px／手機 12px） */
+:root[lang="zh-Hant"] .ovt .tt{font-size:13px;letter-spacing:.03em}
+@media(max-width:759px){:root[lang="zh-Hant"] .ovt .tt{font-size:12px}}
+/* 中文版收藏頁說明：上下留白放寬 */
+#v-sheet .shopv>.vnote.serif:first-of-type{margin-top:24px;margin-bottom:24px}
+:root[lang="zh-Hant"] #v-sheet .shopv>.vnote.serif{line-height:1.8}
+
+/* 系列頁上方的開合列（系列名稱／日期／圖片數／＋－）中文版不用宋體 */
+:root[lang="zh-Hant"] #pline,:root[lang="zh-Hant"] #pline>span{font-family:var(--sans)}
