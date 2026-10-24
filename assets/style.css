@@ -354,7 +354,7 @@ button{-webkit-tap-highlight-color:transparent}
 .ab a{text-decoration:underline;text-underline-offset:3px}
 
 @media(max-width:759px){.two{grid-template-columns:1fr;row-gap:10px}}
-body:has(#back:not([hidden])){--hdh:calc(var(--safet) + 92px)}
+/* （舊）Back 放在頂欄內時加高 92px，已由文末「每頁起始高度統一」取代 */
 /* Archive 預覽（手機＋桌機）：圖下方的名稱／價格／按鈕暫時隱藏（HTML 與 JS 都還在；要恢復就刪掉下面這一行，並把上面 .pv 的 min-height 改回 calc(50vh + 230px)） */
 .pv #pv-c,.pv #pv-p,.pv #pv-a{display:none}
 .ab p.kv{display:grid;grid-template-columns:6.5em 1fr;column-gap:0}
@@ -434,3 +434,167 @@ body:has(#back:not([hidden])){--hdh:calc(var(--safet) + 92px)}
 .pg.cs .lk{display:flex;gap:22px;align-items:baseline;margin-top:12px}
 .pg.cs .lk .dtl{display:inline-block;text-align:left;font-size:12px;text-decoration:underline;text-underline-offset:3px}
 .pg.cs .lk .u2{margin:0;font-size:12px;color:var(--ink)}
+
+/* ===== 每頁起始高度統一 =====
+   頂欄 82px → 「分頁列」36px（Overview/Index、Back＋系列、Archive、Prints/Digital Files、Back 頁，文字中心都在同一高度）
+   → 內容一律從 --cs 開始（圖片頂、文字頂都對齊這條線） */
+:root{--rowh:36px;--cs:calc(var(--hdh) + 40px)}
+body:has(#back:not([hidden])){--hdh:calc(var(--safet) + 82px + var(--rowh));--cs:calc(var(--hdh) + 4px)}
+.back{height:28px;padding:0 12px;line-height:26px;display:inline-flex;align-items:center;justify-content:center}
+#back{position:fixed;z-index:1;left:var(--pad);top:calc(var(--safet) + 82px + (var(--rowh) - 28px)/2)}
+@media(min-width:1200px){#back{left:calc((100% - 1200px)/2 + var(--pad))}}
+#ctr{height:var(--rowh);padding:0 var(--pad);align-items:center}
+#ctr .fbtn{align-self:center;margin-top:0}
+#ctr .tgl button,#ctr .qj button{padding-bottom:0}
+.bar{height:var(--rowh);align-items:center;padding:0 var(--pad);margin-bottom:4px}
+.bar .fbtn{align-self:center}
+.ptabs button{padding-bottom:0}
+#v-archive,#v-prints{padding-top:var(--hdh)}
+#v-about,.vw{padding-top:var(--cs)}
+#ov{margin-top:var(--cs)}
+#grid{margin-top:var(--cs)}
+/* 系列頁：系列名稱列放在 Back 右邊（同一條分頁列），縮圖列緊接在分頁列下方 */
+#pline{z-index:16;top:calc(var(--hdh) - var(--rowh));left:calc(var(--pad) + 40px);right:0;margin:0;max-width:none;height:var(--rowh);padding:0 var(--pad) 0 0;justify-content:center;display:flex;align-items:center;gap:.35em;white-space:nowrap;text-align:left;font-size:15px;line-height:1.2}
+@media(min-width:1200px){#pline{left:calc((100% - 1200px)/2 + var(--pad) + 40px);right:calc((100% - 1200px)/2)}}
+#pline>span:first-child{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
+#pline .sc,#pline button{flex:none}
+@media(max-width:759px){#pline{font-size:13px}}
+#v-project{padding-top:var(--cs)}
+.pthumbs{top:var(--hdh);padding-top:0}
+.pfig{scroll-margin-top:calc(var(--hdh) + 20px + var(--thh,0px))}
+/* Index：第一排內容貼齊起始線（扣掉儲存格內距；View 按鈕的上內距不撐高第一行） */
+#grid{margin-top:calc(var(--cs) - 9px)}
+.c.meta .t{margin-top:-8px}
+/* Archive：上方分隔線貼齊起始線 */
+.arch{margin-top:0}
+
+/* Back：只留箭頭、不要外框 */
+.back{border:0;padding:0;width:28px;height:28px;font-size:20px;line-height:1;justify-content:flex-start;color:var(--ink)}
+.back:hover{background:none;color:var(--mute)}
+/* 系列頁名稱列：桌機以整頁置中（左右各留 Back 寬度），手機在 Back 右側剩餘空間置中 */
+@media(min-width:760px){#pline{left:0;right:0;padding:0 calc(var(--pad) + 40px)}}
+@media(min-width:1200px){#pline{left:calc((100% - 1200px)/2);right:calc((100% - 1200px)/2)}}
+/* 名稱列背景交給頂欄，並讓點擊穿透到下面的 Back；只有收合按鈕可點 */
+#pline{background:none;pointer-events:none}
+#pline button{pointer-events:auto}
+.shopv{max-width:1200px}
+/* 文字頂（字面實際墨跡）與圖片頂對齊：扣掉字體上方的行高留白 */
+#grid{margin-top:calc(var(--cs) - 12px)}
+.pintro{margin-top:-5.5px}
+.vh{margin-top:-2px}
+
+/* Bag／Saved／Checkout／Order：標題上移到「分頁列」，和 ← 同一排；像 Prints 的分頁（底線標出目前頁），Bag 頁右側放 Saved */
+.shopv .vh{position:fixed;z-index:16;top:calc(var(--hdh) - var(--rowh) + 9px);left:calc(var(--pad) + 40px);margin:0;line-height:17px;padding:0;border-bottom:1px solid var(--ink);white-space:nowrap}
+.shopv .fbtn{position:fixed;z-index:16;top:calc(var(--hdh) - var(--rowh) + 9px);right:var(--pad);line-height:17px;white-space:nowrap}
+@media(min-width:1200px){.shopv .vh{left:calc((100% - 1200px)/2 + var(--pad) + 40px)}.shopv .fbtn{right:calc((100% - 1200px)/2 + var(--pad))}}
+@media(max-width:759px){.shopv .fbtn{font-size:11px}}
+.vh{margin-top:0}
+/* Bag：下方「可加入」商品 */
+.shelf{margin-top:44px}
+.shelf h2{font:500 12px var(--sans);text-transform:uppercase;letter-spacing:.03em;margin:0 0 14px}
+.shopv .empty>.vnote.serif:first-child{margin-top:-11px}
+#v-sheet .shopv>.vnote.serif:first-of-type{margin-top:-5px}
+
+/* Bag 頁首：標題與 Saved 同字級、不加底線；分頁列下方加一條固定分隔線（不隨內容捲動） */
+.shopv .vh{border-bottom:0;font:500 12px/17px var(--sans)}
+.shopv .fbtn{font:500 12px/17px var(--sans)}
+@media(max-width:759px){.shopv .vh,.shopv .fbtn{font-size:11px}}
+.shopv::before{content:"";position:fixed;z-index:16;left:var(--pad);right:var(--pad);top:calc(var(--hdh) - 1px);height:1px;background:var(--line)}
+@media(min-width:1200px){.shopv::before{left:calc((100% - 1200px)/2 + var(--pad));right:calc((100% - 1200px)/2 + var(--pad))}}
+.bagl{border-top:0}
+.bsum{border-top:0;padding-top:0}
+@media(min-width:760px){.bsum{position:static;border-top:0}}
+/* 商品卡：灰色規格文字固定預留兩行高度，不論一行或兩行，下面的價格與按鈕位置都一樣 */
+.pg .sp{min-height:calc(1.38em * 2)}
+@media(max-width:759px){.pg .sp{min-height:calc(1.38em * 3)}}
+
+/* 灰色規格文字：在預留的高度內上下置中 */
+.pg .sp{display:flex;flex-direction:column;justify-content:center}
+/* Bag（桌機）：分隔線分成左右兩段，對應清單欄與 Order summary 欄 */
+@media(min-width:760px){.shopv.bagtwo::before{background:linear-gradient(to right,var(--line) calc((100% - 56px) * 1.6 / 2.6),transparent 0,transparent calc((100% - 56px) * 1.6 / 2.6 + 56px),var(--line) 0)}}
+/* Order summary 與左邊第一件商品的價格同高（和清單列的上內距一致） */
+.bsum{padding-top:16px}
+.bl .bp{align-self:start}
+
+/* Checkout：減少線條。拿掉區塊標題的長橫線、摘要的上框與合計線、同意條款的展開線；只保留輸入欄底線與頁首固定線 */
+.cof fieldset{border-top:0;padding-top:4px}
+.cof legend{padding-right:0}
+.cof details,.cof details:last-child{border:0;padding:6px 0}
+.cos{border-top:0;padding-top:0}
+.cos .srow.tot,.cosm .srow.tot,.cosb .srow.tot{border-top:0;margin-top:10px;padding-top:0}
+.cosm{border:0;background:none;margin-bottom:0}
+.cosm summary{padding:0 0 10px}
+.cosm>div{padding:0 0 14px}
+/* Archive：分隔線與頁面左右邊留出邊距（不貼到畫面邊） */
+.arch{margin-left:var(--pad);margin-right:var(--pad);padding-left:0;padding-right:0}
+
+/* Checkout：Order summary 可收合（桌機右欄也有）；Edit Bag 放在標題右側；左右兩欄標題同高並與頁首線留出距離 */
+.co{padding-top:16px}
+.cos details.cosd{border:0;padding:0}
+.cosd summary{display:flex;align-items:baseline;gap:14px;cursor:pointer;font:500 12px var(--sans)}
+.cosd summary::after{content:"+";margin:0;color:var(--blue);font-size:13px}
+.cosd[open] summary::after{content:"−"}
+.cosd summary .eb{margin-left:auto;font-weight:400;color:var(--ink)}
+.cosd>div{padding-top:8px}
+.cosm .eb{display:inline-block;margin:0 0 14px}
+
+/* Checkout 手機：頂部收合摘要與桌機同樣式（大寫標題、＋／−）；底部只留「Total」一行，不重複整份摘要 */
+.cosm summary{font:500 12px var(--sans);text-transform:uppercase;letter-spacing:.03em;gap:12px}
+.cosm summary>span:nth-child(2){text-transform:none;letter-spacing:0}
+.cosm summary::after{content:"+";margin-left:0;color:var(--blue);font-size:13px}
+.cosm[open] summary::after{content:"−"}
+.cosb h2{display:none}
+.cosb .srow:not(.tot){display:none}
+.cosb{margin:18px 0 10px}
+.cosb .srow.tot{margin-top:0}
+
+/* ===== Checkout：摘要固定展開，Edit Bag 在標題同一排靠右 ===== */
+.cosh{display:flex;align-items:baseline;justify-content:space-between;gap:14px;font:500 12px var(--sans)}
+.cosh .eb{font-weight:400;margin:0}
+.cos>div:last-child,.cosm>div:last-child{padding-top:8px}
+.cosm{border:0;background:none;padding:0;margin:0 0 6px}
+.cosm .eb{display:inline}
+.cosd,.cosd summary{all:unset}
+/* ===== 抽屜：不顯示「Saved · Remove」與 Printing & Shipping／Returns／Authenticity（HTML／JS 仍在；要恢復就刪掉下面這行） ===== */
+#s-add,#s-pol{display:none}
+/* ===== 收藏清單與 Prints 說明：與頁首線留出距離 ===== */
+#v-sheet .shopv>.vnote.serif:first-of-type{margin-top:8px;max-width:none}
+.pintro{margin-top:8px}
+/* Enquire by Email 等按鈕文字上下置中 */
+.act.tools>*{display:flex;align-items:center;justify-content:center;line-height:1.2;min-height:44px}
+
+/* 系列頁右上角 Saved 按鈕（與 Bag 頁同位置、同字級）；名稱列右側預留空間避免重疊 */
+#v-project .fbtn{position:fixed;z-index:17;top:calc(var(--hdh) - var(--rowh) + 9px);right:var(--pad);font:500 12px/17px var(--sans);white-space:nowrap}
+@media(min-width:1200px){#v-project .fbtn{right:calc((100% - 1200px)/2 + var(--pad))}}
+@media(max-width:759px){#v-project .fbtn{font-size:11px}#pline{padding-right:calc(var(--pad) + 72px)}}
+/* 手機：兩欄商品卡改成瀑布流，卡片高度不同時下一張自動往上補位（沒有空白） */
+@media(max-width:759px){
+  .pg{display:block;column-count:2;column-gap:12px}
+  .pg figure{break-inside:avoid;margin-bottom:40px}
+}
+
+/* ===== SAVED 按鈕：所有頁面同位置、同字級（手機 11px／桌機 13px）；Bag 標題同字級 ===== */
+#ctr .fbtn,.bar .fbtn,.shopv .fbtn,#v-project .fbtn,.shopv .vh{font:500 11px/17px var(--sans);letter-spacing:.03em;text-transform:uppercase}
+@media(min-width:760px){#ctr .fbtn,.bar .fbtn,.shopv .fbtn,#v-project .fbtn,.shopv .vh{font-size:13px}}
+/* Bag 空的說明、Saved 說明：與 Prints 頁說明文字同高（離頁首線的距離一致） */
+.shopv .empty>.vnote.serif:first-child{margin-top:-1px}
+#v-sheet .shopv>.vnote.serif:first-of-type{margin-top:5px}
+
+/* Bag／Saved／Checkout 的固定分隔線：與 Archive 的分隔線同高（內容起始線 --cs）、同色、同寬 */
+.shopv::before{top:var(--cs)}
+.shopv .empty>.vnote.serif:first-child{margin-top:4px}
+#v-sheet .shopv>.vnote.serif:first-of-type{margin-top:10px}
+/* Bag 空的說明：桌機上下留寬一點 */
+@media(min-width:760px){.shopv .empty>.vnote.serif:first-child{margin-top:18px;margin-bottom:26px}}
+@media(min-width:760px){.shopv .empty>.vnote.serif:first-child{max-width:none}}
+/* Bag 的分隔線與 Archive 完全相同：一整條（取消桌機版左右分段）；左右欄用欄距區分即可 */
+@media(min-width:760px){.shopv.bagtwo::before{background:var(--line)}}
+
+/* ===== 切換頁面時分頁列位置一致 ===== */
+/* 捲軸有無不再讓版面左右位移 */
+html{scrollbar-gutter:stable}
+/* Archive／Prints 的標題列改成固定在頂欄下方（和 Overview／Index／Bag／系列頁相同），不再隨內容捲走 */
+.bar{position:fixed;z-index:14;left:0;right:0;top:var(--hdh);max-width:1200px;margin:0 auto;height:calc(var(--rowh) + 4px);padding:0 var(--pad) 4px;background:var(--bg);align-items:center}
+#v-archive,#v-prints{padding-top:var(--cs)}
+/* Bag 等頁：分頁列到分隔線之間用白底蓋住，往下捲時不會從縫隙看到下面的圖 */
+.shopv::after{content:"";position:fixed;z-index:15;left:0;right:0;top:var(--hdh);height:calc(var(--cs) - var(--hdh) + 1px);background:var(--bg)}

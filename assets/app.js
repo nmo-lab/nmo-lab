@@ -118,11 +118,13 @@ function shipFor(zoneId) {
   const base = sh.reduce((n, l) => n + lineAmount(l), 0);
   return { needs: true, zone, fee: zone.freeOver != null && base >= zone.freeOver ? 0 : Number(zone.fee || 0) };
 }
-function addToBag(w, opt) {
+function addToBag(w, opt, quiet) {
   const l = bag.find((x) => x.id === w.id && (x.opt || 0) === (opt || 0));
   if (l) l.qty = Math.min(maxQty(w), l.qty + 1); else bag.push({ id: w.id, opt: opt || 0, qty: 1 });
   saveBag();
-  toast("Added to Bag", "View Bag", () => go("/bag"));
+  /* 人在 Bag 頁時就地更新（標題數量、清單、下方可加入的商品），不跳頁、不進結帳 */
+  if (curTop === "bag" && !sheetOpen) { const y = scrollY; renderBag(); scrollTo(0, y); }
+  if (!quiet) toast("Added to Bag", curTop === "bag" ? "" : "View Bag", () => go("/bag"));
 }
 
 /* ---------- 3. 頂欄／頁尾／通用元件 ---------- */
@@ -195,7 +197,7 @@ model.forEach((s) => {
     s.items.forEach((w) => { const im = mk(w, null, s.layout === "grid2"); im.onclick = () => toWork(w); g.appendChild(im); });
     sec.appendChild(g);
   } else {
-    const h = mk(s.items[0], null, true); h.onclick = open; sec.appendChild(h);
+    const h = mk(s.items[0], null, true); h.onclick = () => toWork(s.items[0]); sec.appendChild(h);
     if (s.items.length > 1) {
       const t = el("div", "thumbs");
       s.items.slice(1, 6).forEach((w) => { const im = mk(w); im.onclick = () => toWork(w); t.appendChild(im); });
@@ -225,7 +227,7 @@ function renderGrid() {
     s.items.forEach((w) => {
       const c = el("div", "c btn", `<span class="n mono">${w.idx}</span>`);
       const col = el("div", "col"); col.style.setProperty("--ar", (w.width / w.height).toFixed(4)); c.appendChild(col);
-      const imw = el("div", "imw"); imw.appendChild(mk(w)); col.appendChild(imw);
+      const imw = el("div", "imw"), pim = mk(w); pim.onclick = () => go("/series/" + s.slug + "?w=" + encodeURIComponent(w.id)); pim.style.cursor = "pointer"; imw.appendChild(pim); col.appendChild(imw);
       const ft = el("div", "ft"); col.appendChild(ft);
       const tt = el("span", "t"); tt.textContent = w.title; ft.appendChild(tt); ft.appendChild(saveBtn(w));
       c.appendChild(el("span", "cp", esc(w.status === "sold" ? "Sold Out" : w.priceLabel)));
@@ -271,6 +273,7 @@ function buildProject(s) {
   });
   v.appendChild(th);
   const setThh = () => { document.documentElement.style.setProperty("--plh", pl.offsetHeight + "px"); v.style.setProperty("--thh", (th.hidden ? 0 : th.offsetHeight) + "px"); };
+  const sfb = el("button", "fbtn up"); sfb.type = "button"; sfb.onclick = () => go("/sheet"); sfb.textContent = `${SAVED} (${folder.length})`; v.appendChild(sfb);   /* 系列頁右上角：到收藏清單 */
   const tbtn = pl.querySelector("button"); tbtn.innerHTML = MINUS; tbtn.setAttribute("aria-label", "Show / hide thumbnails");
   tbtn.onclick = () => { th.hidden = !th.hidden; tbtn.innerHTML = th.hidden ? PLUS : MINUS; setThh(); };
   requestAnimationFrame(setThh); setTimeout(setThh, 400); onresize = setThh;
@@ -305,7 +308,7 @@ all.forEach((w) => {
 function pick(n) {
   const w = all[n]; arows.forEach((li, k) => li.classList.toggle("on", k === n));
   T("#pv-n", `${pad(n + 1)}/${all.length}`); T("#pv-c", `${w.title}, ${w.sname}, ${w.idx}`);
-  const im = $("#pv-img"); im.alt = w.title; im.onerror = () => { im.onerror = null; im.src = ph(n, n % 3 === 2); };
+  const im = $("#pv-img"); im.alt = w.title; im.style.cursor = "pointer"; im.onclick = () => go("/series/" + w.slug + "?w=" + encodeURIComponent(w.id)); im.onerror = () => { im.onerror = null; im.src = ph(n, n % 3 === 2); };
   im.src = (w.thumb || w.img) || ph(n, n % 3 === 2);
   T("#pv-p", [w.priceLabel, statusText(w)].filter(Boolean).join(" · "));
   const a = $("#pv-a"); a.innerHTML = ""; a.append(buyBtn(w), detailBtn(w));
@@ -408,7 +411,10 @@ $("#s-opt").onchange = syncSheet;
 $("#s-bag").onclick = () => {
   const w = cur, opt = +$("#s-opt").value || 0;
   if (bag.some((l) => l.id === w.id && (l.opt || 0) === opt)) { go("/bag"); return; }
-  addToBag(w, opt); syncSheet();
+  addToBag(w, opt, true);
+  /* 加完關閉抽屜、回到原本的頁面繼續挑；想結帳再從提示或下方 Bag 進去 */
+  closeSheet();
+  setTimeout(() => toast("Added to Bag", curTop === "bag" ? "" : "View Bag", () => go("/bag")), 450);
 };
 $("#s-add").onclick = () => { toggleFolder(cur.id); syncSheet(); };
 function closeSheetUI() { sheetOpen = false; $("#sheet").classList.remove("on"); scrim.classList.remove("on"); }
@@ -433,7 +439,7 @@ function renderSheetPage() {
   const v = $("#v-sheet"); v.innerHTML = "";
   const items = folder.map(byId).filter(Boolean);
   const inner = el("div", "shopv", `<h1 class="vh up">${esc(SAVED)} Works (${items.length})</h1>
-    <p class="vnote serif">Works you save for later are kept on this device. Use Copy Link to open the same selection on another device, or download it as a contact sheet (PDF). Ready to buy? Add works to your Bag.</p>`);
+    <p class="vnote serif">Works you save for later are kept on this device. Use Copy Link to open the same selection on another device, or download it as a contact sheet (PDF).<br>Ready to buy? Add works to your Bag.</p>`);
   v.appendChild(inner);
   if (!items.length) {
     inner.appendChild(el("p", "vnote serif", "Nothing saved yet. Open any work and choose Save for Later."));
@@ -453,7 +459,10 @@ function renderSheetPage() {
     const f = printCard(w);
     const rm = el("button", "u2", "Remove"); rm.type = "button"; rm.onclick = () => { toggleFolder(w.id); renderSheetPage(); };
     const fc = f.querySelector("figcaption"), lk = el("div", "lk"), dt = fc.querySelector(".dtl");
-    if (dt) lk.appendChild(dt); lk.appendChild(rm); fc.appendChild(lk); g.appendChild(f);
+    if (dt) dt.remove();   /* 收藏清單不顯示 Details */
+    /* 點圖：到系列頁裡這張圖原本的位置 */
+    const tim = f.querySelector(".tile img"); if (tim) { tim.style.cursor = "pointer"; tim.onclick = () => go("/series/" + w.slug + "?w=" + encodeURIComponent(w.id)); }
+    lk.appendChild(rm); fc.appendChild(lk); g.appendChild(f);
   });
   inner.appendChild(g);
 }
@@ -480,6 +489,13 @@ const noteHTML = () => {
 function renderBag() {
   bag = bag.filter((l) => canBuy(byId(l.id))); saveBag();
   const inner = shopView("#v-bag", `Bag (${bagCount()})`);
+  const fb = el("button", "fbtn up"); fb.type = "button"; fb.onclick = () => go("/sheet"); fb.textContent = `${SAVED} (${folder.length})`; inner.appendChild(fb);
+  const shelf = (host, head) => {
+    const pick = all.filter((w) => canBuy(w) && !bag.some((l) => l.id === w.id)).slice(0, 8);
+    if (!pick.length) return;
+    const sec = el("div", "shelf"); sec.appendChild(el("h2", "", head));
+    const g = el("div", "pg"); pick.forEach((w) => g.appendChild(printCard(w))); sec.appendChild(g); host.appendChild(sec);
+  };
   if (!bag.length) {
     const em = el("div", "empty"); inner.appendChild(em);
     em.appendChild(el("p", "vnote serif", "Your bag is empty. Pick a print or digital file and it will wait here until you check out."));
@@ -487,8 +503,7 @@ function renderBag() {
     const a1 = el("a", "buy", "Browse Prints"); a1.href = "#/prints"; act.appendChild(a1);
     if (folder.length) { const a2 = el("a", "", `${esc(SAVED)} (${folder.length})`); a2.href = "#/sheet"; act.appendChild(a2); }
     em.appendChild(act);
-    const pick = all.filter(canBuy).slice(0, 4);
-    if (pick.length) { em.appendChild(el("h2", "", "Available now")); const g = el("div", "pg"); pick.forEach((w) => g.appendChild(printCard(w))); em.appendChild(g); }
+    shelf(em, "Available now");
     return;
   }
   const list = el("div", "bagl");
@@ -497,7 +512,7 @@ function renderBag() {
     const row = el("article", "bl", `<a class="bi" href="#/work/${esc(w.id)}"></a>
       <div class="bm"><div class="bt serif"></div><div class="mute bs"></div><div class="bo"></div>
         <div class="bq"><button type="button" aria-label="Decrease">−</button><span>${l.qty}</span><button type="button" aria-label="Increase">+</button></div></div>
-      <div class="bp"><div class="lp"></div><button type="button" class="u2">Remove</button></div>`);
+      <div class="bp"><div class="lp"></div></div>`);
     row.querySelector(".bi").appendChild(mk(w));
     row.querySelector(".bt").textContent = w.title;
     row.querySelector(".bs").textContent = `${w.sname} · ${TYPES[w.type].label}${w.spec ? " · " + w.spec : ""}`;
@@ -514,10 +529,10 @@ function renderBag() {
     }
     const [minus, plus] = row.querySelectorAll(".bq button");
     const mx = maxQty(w);
-    minus.onclick = () => { if (l.qty > 1) { l.qty--; saveBag(); renderBag(); } };
+    minus.setAttribute("aria-label", "Decrease quantity (removes the item at 1)");
+    minus.onclick = () => { if (l.qty > 1) l.qty--; else bag.splice(i, 1); saveBag(); renderBag(); };   /* 數量 1 時再按 − 就是移除 */
     plus.onclick = () => { if (l.qty < mx) { l.qty++; saveBag(); renderBag(); } else toast(mx === 1 ? "Limited to one per order" : `Only ${mx} available`); };
-    if (mx === 1) { minus.disabled = plus.disabled = true; }
-    row.querySelector(".bp .u2").onclick = () => { bag.splice(i, 1); saveBag(); renderBag(); };
+    if (mx === 1) plus.disabled = true;
     list.appendChild(row);
   });
   const needsShip = bag.some((l) => ships(byId(l.id)));
@@ -530,7 +545,8 @@ function renderBag() {
   const more = el("a", "", "Continue Browsing"); more.href = "#/prints"; act.appendChild(more);
   side.appendChild(act);
   side.appendChild(el("p", "vnote", esc(CK.requestNote || "Limited editions are held for you once your order request is confirmed. You will not be charged at this step.")));
-  const wrap = el("div", "bagwrap"); wrap.append(list, side); inner.appendChild(wrap);
+  inner.classList.add("bagtwo"); const wrap = el("div", "bagwrap"); wrap.append(list, side); inner.appendChild(wrap);
+  shelf(inner, "Add more");
 }
 
 /* ---------- 5. 購物：Checkout ---------- */
@@ -556,7 +572,7 @@ function renderCheckout() {
   const field = (label, name, attrs, tag) => `<label class="f"><span class="up">${label}</span>${tag === "textarea" ? `<textarea name="${name}" ${attrs || ""}>${esc(saved[name] || "")}</textarea>` : `<input name="${name}" value="${esc(saved[name] || "")}" ${attrs || ""}>`}</label>`;
   const emailMode = !CK.endpoint;
   const wrap = el("div", "co");
-  wrap.innerHTML = `<details class="cosm"><summary><span>Order summary (${bagCount()})</span><span id="co-tot"></span></summary><div id="co-sum-m"></div></details>
+  wrap.innerHTML = `<div class="cosm"><div class="cosh"><span class="up">Order summary (${bagCount()})</span><a class="u2 eb" href="#/bag">Edit Bag</a></div><div id="co-sum-m"></div></div>
   <form id="co" class="cof">
     <fieldset><legend class="up">1 · Contact</legend>
       ${field("Name *", "name", 'required autocomplete="name"')}
@@ -567,7 +583,7 @@ function renderCheckout() {
       <label class="f"><span class="up">Region *</span><select name="zone" required>
         <option value="">Select…</option>${ZONES.map((z) => `<option value="${esc(z.id)}"${saved.zone === z.id ? " selected" : ""}>${esc(z.label)}</option>`).join("")}
       </select></label>
-      ${field("Address *", "address", "required autocomplete=\"street-address\" rows=\"2\"", "textarea")}
+      ${field("Address *", "address", 'required autocomplete="street-address"')}
       ${field("City *", "city", 'required autocomplete="address-level2"')}
       ${field("Postal code *", "postal", 'required autocomplete="postal-code"')}
     </fieldset>` : `<fieldset><legend class="up">2 · Delivery</legend><p class="vnote serif">Digital files are delivered by email after payment is confirmed.</p></fieldset>`}
@@ -579,12 +595,12 @@ function renderCheckout() {
     <button type="submit" class="buy sub">${emailMode ? "Continue — Send by Email" : "Place Order Request"}</button>
     <p class="vnote" id="co-msg" role="status" aria-live="polite">${esc(CK.requestNote || "You will not be charged yet.")} We reply within ${esc(CK.replyWithin)} to confirm availability and send payment instructions.</p>
   </form>
-  <aside class="cos"><h2 class="up">Order summary</h2><div id="co-sum"></div><a class="u2" href="#/bag">Edit Bag</a></aside>`;
+  <aside class="cos"><div class="cosh"><span class="up">Order summary</span><a class="u2 eb" href="#/bag">Edit Bag</a></div><div id="co-sum"></div></aside>`;
   inner.appendChild(wrap);
   const form = $("#co"), sumEl = $("#co-sum");
   const upd = () => {
     const z = form.elements.zone ? form.elements.zone.value : "", h = summaryHTML(z);
-    sumEl.innerHTML = h; $("#co-sum-m").innerHTML = h; $("#co-sum-b").innerHTML = h; $("#co-tot").textContent = totalText(z);
+    sumEl.innerHTML = h; $("#co-sum-m").innerHTML = h; $("#co-sum-b").innerHTML = h;
   };
   upd(); if (form.elements.zone) form.elements.zone.onchange = upd;
   form.onsubmit = (e) => { e.preventDefault(); placeOrder(form); };
@@ -763,7 +779,7 @@ function updCounts() {
 /* 回到頂端 */
 const topBtn = $("#top");
 function onScroll() {
-  const nearBottom = scrollY + innerHeight > document.documentElement.scrollHeight - 220;
+  const ft = document.querySelector("footer"), nearBottom = ft && !ft.hidden && scrollY + innerHeight > document.documentElement.scrollHeight - 220;   // 沒有頁尾的頁面（Bag／Checkout）在最底部也要能按 Top
   topBtn.classList.toggle("on", scrollY > 500 && !nearBottom);   // 捲到頁尾就收起，不蓋住頁尾文字
 }
 let tk = false;

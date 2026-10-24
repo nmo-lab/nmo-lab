@@ -2,6 +2,9 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
+<!-- 資安：限制頁面只能載入自己的程式與 Google Fonts，阻擋外來腳本注入（connect-src https: 保留給結帳表單服務） -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https:; form-action 'self' mailto: https:; base-uri 'self'; object-src 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>NMO-LAB, Photography</title>
 <meta name="description" content="NMO-LAB photography: archival prints and digital files.">
@@ -20,7 +23,7 @@
 <header class="hd up">
   <div class="l">
     <a id="name" href="#/" aria-label="Home"></a>
-    <button type="button" class="back" id="back" hidden>← Back</button>
+    <button type="button" class="back" id="back" aria-label="Back" hidden>←</button>
   </div>
   <div>
     <div>Enquiries</div>
@@ -33,7 +36,7 @@
     <span>/</span>
     <button type="button" id="b-idx" aria-pressed="false">Index</button>
   </div>
-  <button type="button" class="back" id="b-back" hidden>← Back</button>
+  <button type="button" class="back" id="b-back" aria-label="Back" hidden>←</button>
   <nav id="qj" class="qj up" aria-label="Series" hidden></nav>
   <button type="button" class="fbtn up"></button>
 </div>
