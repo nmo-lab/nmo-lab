@@ -35,7 +35,7 @@
     "Home": "回首頁", "Back": "返回", "Main": "主選單", "Series": "系列", "Product type": "商品類型", "Info": "說明",
     "Back to top": "回到頂端", "Close": "關閉", "Language": "語言",
     /* 頁尾 */
-    "Newsletter": "電子報", "Subscribe for the Dispatch: new work, print releases and the notes behind the pictures.": "訂閱《Dispatch》，第一時間收到新作、相片上架與創作筆記。",
+    "Newsletter": "電子報", "Subscribe to The Dispatch: new work, print releases, and the notes behind the pictures.": "訂閱《Dispatch》，第一時間收到新作、相片上架與創作筆記。",
     "Email": "電子郵件", "Submit": "訂閱",
     /* 作品卡／按鈕 */
     "Details": "查看詳情", "Add to Bag": "加入購物車", "In Bag · View": "已加入・查看購物車", "View Bag": "查看購物車",
@@ -43,7 +43,7 @@
     "Price on Request — Enquire": "價格請來信洽詢", "Sold Out — Enquire": "已售完・來信詢問", "Reserved — Enquire": "已預訂・來信詢問",
     "View Series ↗": "看整個系列 ↗", "View ↗": "查看 ↗", "View": "查看", "Selected Projects": "更多系列", "DATE": "日期",
     "Show / hide thumbnails": "顯示／隱藏縮圖", "Save for Later": "加入收藏", "Remove": "移除",
-    "Context": "作品說明", "Specifications": "規格", "Option": "尺寸與版本", "Price": "售價", "Work details": "作品詳情",
+    "Context": "作品說明", "Specifications": "規格", "Option": "尺寸與版本", "Format": "尺寸與版本", "Price": "售價", "Work details": "作品詳情",
     /* 提示 */
     "Added to Bag": "已加入購物車", "Saved for later": "已加入收藏", "Link copied": "已複製連結", "Copied": "已複製",
     "Limited to one per order": "此作品每筆訂單限購 1 件", "Order summary copied": "已複製訂單內容",

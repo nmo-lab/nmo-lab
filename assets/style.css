@@ -662,3 +662,29 @@ html{scrollbar-gutter:stable}
 /* Overview：縮圖列（5 欄）與 grid 系列（2／3 欄）圖與圖的間隔統一為 4px */
 .thumbs{gap:4px}
 .gal{gap:4px}
+
+/* ===== 中文版細修（依排版檢查意見） ===== */
+/* 小字用 400：中文筆畫多，500/600 在 11–13px 會糊成一塊 */
+:root[lang="zh-Hant"] body,
+:root[lang="zh-Hant"] .fbtn,:root[lang="zh-Hant"] .vh,:root[lang="zh-Hant"] .qb,:root[lang="zh-Hant"] .buy,
+:root[lang="zh-Hant"] .ptabs button,:root[lang="zh-Hant"] #dock button,:root[lang="zh-Hant"] .dtl{font-weight:400}
+/* 多行說明文字放寬行距 */
+:root[lang="zh-Hant"] .sp,:root[lang="zh-Hant"] .pcap,:root[lang="zh-Hant"] .bs,:root[lang="zh-Hant"] .vnote,
+:root[lang="zh-Hant"] .pol p,:root[lang="zh-Hant"] details p,:root[lang="zh-Hant"] footer p{line-height:1.7}
+/* 中英數字之間由瀏覽器自動補微間距（不支援的舊瀏覽器會忽略） */
+:root[lang="zh-Hant"]{text-autospace:normal}
+/* 數字等寬對齊（典藏編號、價格、金額） */
+.arch,.pr,.lp,.srow,.cp,.mono,.bn,.pvp{font-variant-numeric:tabular-nums}
+
+/* 中文版：系列標題列（Overview／Selected Projects）宋體配黑體小字很突兀 → 整列統一黑體、同字重 */
+:root[lang="zh-Hant"] .ovt .tt,:root[lang="zh-Hant"] .ovt .rm,
+:root[lang="zh-Hant"] .sel .r,:root[lang="zh-Hant"] .sel .r button,:root[lang="zh-Hant"] .sel .rm{font-family:var(--sans);font-weight:400}
+:root[lang="zh-Hant"] .vs{font-weight:400;letter-spacing:.04em}
+/* 中文版：價格不用粗體（中文旁邊的 600 粗體數字太重） */
+:root[lang="zh-Hant"] .pr,:root[lang="zh-Hant"] .cp,:root[lang="zh-Hant"] .lp,:root[lang="zh-Hant"] .pvp,
+:root[lang="zh-Hant"] .pfig .pr,:root[lang="zh-Hant"] .srow,:root[lang="zh-Hant"] .srow.tot{font-weight:400}
+
+/* 中文版：作品名稱／系列名稱與 Prints 說明文字（.pintro）同一種字體（思源宋體）；羅馬數字與「看整個系列」小標維持黑體 */
+:root[lang="zh-Hant"] .ovt .tt,:root[lang="zh-Hant"] .sel .r button,
+:root[lang="zh-Hant"] .pg .tt2,:root[lang="zh-Hant"] .pcap .tt2,:root[lang="zh-Hant"] #pline>span:first-child,
+:root[lang="zh-Hant"] .bt,:root[lang="zh-Hant"] .sheet h3{font-family:var(--serif);font-weight:400}
