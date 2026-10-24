@@ -16,14 +16,22 @@
       "btn": "Purchase Print",
       "ord": "Order Print",
       "ships": true,
-      "intro": "Archival pigment prints on cotton rag paper, signed and numbered. Ships in 3–5 business days."
+      "intro": "Archival pigment prints on cotton rag paper, signed and numbered. Ships in 3–5 business days.",
+      "label_zh": "相片",
+      "btn_zh": "購買相片",
+      "ord_zh": "訂購相片",
+      "intro_zh": "以藝術微噴搭配棉質相紙輸出，每張皆有簽名與編號。付款確認後 3–5 個工作天內寄出。"
     },
     "digital": {
       "label": "Digital Files",
       "btn": "Purchase Download",
       "ord": "Order Download",
       "ships": false,
-      "intro": "High-resolution files delivered by email after payment is confirmed. Personal use licence."
+      "intro": "High-resolution files delivered by email after payment is confirmed. Personal use licence.",
+      "label_zh": "數位檔案",
+      "btn_zh": "購買下載檔",
+      "ord_zh": "訂購下載檔",
+      "intro_zh": "高解析度檔案，確認付款後以電子郵件寄送，僅限個人使用授權。"
     }
   },
   "about": {
@@ -34,9 +42,15 @@
         "lines": [
           "Email　info@nmolab.com",
           "Instagram　@nmo.lab"
+        ],
+        "title_zh": "聯絡",
+        "lines_zh": [
+          "電子郵件　info@nmolab.com",
+          "Instagram　@nmo.lab"
         ]
       }
-    ]
+    ],
+    "intro_en": "Taipei-based photographer focused on street, city and natural light. Every work can be collected as a hand-mounted physical print, or downloaded as a high-resolution digital file.\n\nWorks are output on archival pigment inks and cotton rag paper, each signed and numbered.\n\nA small number of commercial and editorial commissions are also accepted."
   },
   "currency": "NT$",
   "shipping": {
@@ -45,12 +59,14 @@
         "id": "tw",
         "label": "Taiwan",
         "fee": 100,
-        "freeOver": 3000
+        "freeOver": 3000,
+        "label_zh": "台灣"
       },
       {
         "id": "intl",
         "label": "International",
-        "fee": 600
+        "fee": 600,
+        "label_zh": "海外"
       }
     ]
   },
@@ -61,20 +77,27 @@
     "refPrefix": "NMO",
     "requestNote": "You will not be charged yet.",
     "paymentInfo": "付款方式（銀行轉帳、PayPal 或付款連結）會在確認訂單後以電子郵件通知。請把這段換成你實際的付款說明。",
-    "requireTerms": true
+    "requireTerms": true,
+    "paymentInfo_en": "Payment options (bank transfer, PayPal or a payment link) will be sent by email once your order is confirmed. Replace this text with your actual payment instructions."
   },
   "policies": [
     {
       "title": "Printing & Shipping",
-      "text": "每張相紙手工包裝，確認付款後 3 至 5 個工作天內寄出，以硬挺紙筒或平板包裝；可客製尺寸與裝裱，歡迎來信詢問。國際運送的關稅由收件人負擔。數位檔案以電子郵件交付，不需運費。（範例文字，請改成你的實際規則）"
+      "text": "每張相紙手工包裝，確認付款後 3 至 5 個工作天內寄出，以硬挺紙筒或平板包裝；可客製尺寸與裝裱，歡迎來信詢問。國際運送的關稅由收件人負擔。數位檔案以電子郵件交付，不需運費。（範例文字，請改成你的實際規則）",
+      "title_zh": "輸出與運送",
+      "text_en": "Each print is hand-packed and shipped within 3–5 business days of confirmed payment, in a rigid tube or flat packaging. Custom sizes and framing are available, please enquire by email. Import duties on international shipments are paid by the recipient. Digital files are delivered by email with no shipping fee. (Sample text — replace with your actual rules.)"
     },
     {
       "title": "Returns",
-      "text": "商品若於運送中受損，請在收到後 7 天內附照片來信，我們會補寄或退款。數位檔案一旦交付，恕不退款。（範例文字，請依你的實際政策與當地法規調整）"
+      "text": "商品若於運送中受損，請在收到後 7 天內附照片來信，我們會補寄或退款。數位檔案一旦交付，恕不退款。（範例文字，請依你的實際政策與當地法規調整）",
+      "title_zh": "退換貨",
+      "text_en": "If an item is damaged in transit, email us photos within 7 days of receipt and we will reship or refund. Digital files are non-refundable once delivered. (Sample text — adjust to your actual policy and local regulations.)"
     },
     {
       "title": "Authenticity",
-      "text": "限量版相紙皆附簽名與編號，並附真品證明卡。（範例文字，請改成你的實際做法）"
+      "text": "限量版相紙皆附簽名與編號，並附真品證明卡。（範例文字，請改成你的實際做法）",
+      "title_zh": "真品證明",
+      "text_en": "Every limited-edition print is signed and numbered, and comes with a certificate of authenticity. (Sample text — replace with your actual practice.)"
     }
   ]
 }

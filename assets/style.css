@@ -397,8 +397,6 @@ button{-webkit-tap-highlight-color:transparent}
 .tile.l{aspect-ratio:3/2}
 .pg .tile.p,.pg .tile.l{overflow:hidden}
 .pg .tile.p img,.pg .tile.l img{width:100%;height:100%;object-fit:cover;object-position:center}
-/* Prints：Details 按鈕暫時隱藏（HTML／JS 仍在，要恢復就刪掉下一行） */
-.pg .dtl{display:none}
 /* 系列頁 Selected Projects */
 .sel .r button{padding:4px 0}
 .sel .vs{margin-left:.9em}
@@ -598,3 +596,69 @@ html{scrollbar-gutter:stable}
 #v-archive,#v-prints{padding-top:var(--cs)}
 /* Bag 等頁：分頁列到分隔線之間用白底蓋住，往下捲時不會從縫隙看到下面的圖 */
 .shopv::after{content:"";position:fixed;z-index:15;left:0;right:0;top:var(--hdh);height:calc(var(--cs) - var(--hdh) + 1px);background:var(--bg)}
+
+/* Prints／Digital 說明文字桌面版不換行 */
+@media(min-width:760px){.pintro{max-width:none}}
+
+/* Prints：Details 為第二顆按鈕（外框款），與 Add 按鈕同寬同高，上下排列 */
+.pg:not(.cs) .pacts{flex-direction:column;align-items:stretch;gap:8px}
+.pg:not(.cs) .dtl{display:block;padding:9px 14px;border:1px solid var(--ink);background:none;color:var(--ink);text-transform:uppercase;letter-spacing:.04em;font-size:11px;text-align:center;white-space:nowrap}
+.pg:not(.cs) .dtl:hover{background:var(--ink);color:#fff}
+.pg:not(.cs) .tile img{cursor:default}
+/* 詳細資料選單：手機與電腦都從下方彈出 */
+@media(min-width:760px){
+  .sheet{left:50%;right:auto;top:auto;bottom:0;width:min(640px,100%);max-height:88vh;border:1px solid var(--ink);border-bottom:0;transform:translate(-50%,102%);padding:24px 28px calc(var(--safeb) + 24px)}
+  .sheet.on{transform:translate(-50%,0)}
+}
+.pg:not(.cs) .dtl{text-decoration:none}
+/* Prints／Digital Files 分頁數字不用灰色 */
+#ptabs .mute{color:inherit}
+/* 電腦版：兩顆按鈕左右並排；手機維持上下 */
+@media(min-width:760px){
+  .pg:not(.cs) .pacts{flex-direction:row;align-items:stretch;gap:10px;flex-wrap:nowrap}
+  .pg:not(.cs) .pacts>*{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center}
+}
+
+/* ===== 語言切換鈕（右上角 EN / 中文） ===== */
+.hd .lang{position:absolute;right:var(--pad);top:calc(var(--safet) + 14px);display:flex;gap:6px;align-items:baseline;font-size:12px;line-height:1.35}
+.hd .lang button{padding:0;color:var(--mute);letter-spacing:.03em}
+.hd .lang button[aria-pressed="true"]{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.hd .lang span{color:var(--mute)}
+
+/* ===== 中文字型：無襯線與等寬一律思源黑體；原本用襯線體的標題／說明改用思源宋體（英文版的 EB Garamond 對應位置） ===== */
+:root[lang="zh-Hant"]{--sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;--serif:"Noto Serif TC","Songti TC","PMingLiU",serif;--mono:var(--sans)}
+/* 洽詢：手機版維持英文 Enquiries，電腦版才顯示中文 */
+.enq-zh{display:none}
+@media(min-width:760px){.enq-en{display:none}.enq-zh{display:inline}}
+/* Top 按鈕只留箭頭 */
+#top{min-width:44px;text-align:center}
+/* Saved：電腦版放在底部導覽（About 與 Bag 之間），右上角的 Saved 隱藏；手機版維持右上角 */
+@media(min-width:760px){
+  #ctr .fbtn,.bar .fbtn,.shopv .fbtn,#v-project .fbtn{display:none}
+  #dock button{padding-left:20px;padding-right:20px}
+}
+@media(max-width:759px){#dock button[data-k="sheet"]{display:none}}
+
+/* ===== 中文版字級微調：漢字比拉丁字母「看起來大」，大字級縮小一點、字距加一點點、行高放寬 ===== */
+:root[lang="zh-Hant"] body{letter-spacing:.02em}
+:root[lang="zh-Hant"] .up{letter-spacing:.04em}
+:root[lang="zh-Hant"] #pline,
+:root[lang="zh-Hant"] .pintro{font-size:13px;line-height:1.7}
+:root[lang="zh-Hant"] .ovt .tt,
+:root[lang="zh-Hant"] .pg .tt2,
+:root[lang="zh-Hant"] .sel .r,
+:root[lang="zh-Hant"] .arch li.yr,
+:root[lang="zh-Hant"] footer .lk,
+:root[lang="zh-Hant"] .ord{font-size:14px;line-height:1.5}
+:root[lang="zh-Hant"] .vnote.serif,
+:root[lang="zh-Hant"] p.serif,
+:root[lang="zh-Hant"] .pnote{font-size:13px;line-height:1.8}
+:root[lang="zh-Hant"] .bt{font-size:15px;line-height:1.4}
+:root[lang="zh-Hant"] .sheet h3{font-size:18px;line-height:1.4;letter-spacing:.04em}
+:root[lang="zh-Hant"] .sheet .b p,
+:root[lang="zh-Hant"] .two .tx p,
+:root[lang="zh-Hant"] .ab p{line-height:1.8}
+
+/* Overview：縮圖列（5 欄）與 grid 系列（2／3 欄）圖與圖的間隔統一為 4px */
+.thumbs{gap:4px}
+.gal{gap:4px}

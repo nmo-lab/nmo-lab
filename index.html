@@ -26,7 +26,7 @@
     <button type="button" class="back" id="back" aria-label="Back" hidden>←</button>
   </div>
   <div>
-    <div>Enquiries</div>
+    <div id="enq">Enquiries</div>
     <a id="mail"></a>
   </div>
 </header>
@@ -97,17 +97,16 @@
 
   <div class="fl">
     <div id="copy"></div>
-    <div>Full-resolution images available on request via email.</div>
   </div>
   <div class="fr">
     <span id="clock"></span>
-    <button type="button" id="f-top" class="up">↑ Top</button>
+    <button type="button" id="f-top" class="up" aria-label="Back to top">↑</button>
   </div>
 </footer>
 </div>
 
 <div id="toast" role="status" aria-live="polite"></div>
-<button type="button" id="top" class="up" aria-label="Back to top">↑ Top</button>
+<button type="button" id="top" class="up" aria-label="Back to top">↑</button>
 <nav id="dock" class="up" aria-label="Main"></nav>
 
 <div id="scrim"></div>
@@ -126,7 +125,6 @@
     <a class="buy" id="s-enq" hidden></a>
   </div>
   <div class="act sub2">
-    <a id="s-now" target="_blank" rel="noopener" hidden></a>
     <button type="button" id="s-add"></button>
   </div>
   <div class="pols" id="s-pol"></div>
@@ -137,6 +135,7 @@
 <!-- 這一段由 build 腳本自動填入（無 JavaScript 與搜尋引擎用的作品清單）。請勿手改。 -->
 <!-- build:seo:end -->
 
+<script src="assets/i18n.js" defer></script>
 <script src="assets/app.js" defer></script>
 </body>
 </html>

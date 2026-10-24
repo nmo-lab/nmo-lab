@@ -8,7 +8,7 @@
 (function () {
 const load = (u) => fetch(u, { cache: "no-cache" }).then((r) => { if (!r.ok) throw new Error(u + " → HTTP " + r.status); return r.json(); });
 Promise.all([load("data/site.json"), load("data/works.json")])
-  .then(([site, works]) => boot({ ...site, series: works.series || [] }))
+  .then(([site, works]) => boot(window.NMO_I18N.localize({ ...site, series: works.series || [] })))
   .catch((err) => {
     console.error(err);
     const p = document.createElement("p");
@@ -134,7 +134,12 @@ $("#mail").href = "mailto:" + SHOP.email; T("#mail", SHOP.email);
 $("#nl").onsubmit = (e) => { e.preventDefault(); const m = e.target.querySelector("input").value;
   location.href = SHOP.newsletter || ("mailto:" + SHOP.email + "?subject=Subscribe&body=" + encodeURIComponent(m)); };
 function clock() {
-  const d = new Date(), o = { timeZone: SHOP.timezone };
+  const d = new Date(), o = { timeZone: SHOP.timezone }, zh = window.NMO_I18N.lang === "zh";
+  if (zh) {
+    const t = d.toLocaleTimeString("zh-TW", { ...o, hour: "numeric", minute: "2-digit", hour12: true });
+    const wd = d.toLocaleDateString("zh-TW", { ...o, month: "numeric", day: "numeric", weekday: "long" });
+    T("#clock", `${SHOP.tzLabel} ${t} · ${wd}`); T("#copy", `© ${d.getFullYear()} NMO-LAB. All rights reserved.`); return;
+  }
   const t = d.toLocaleTimeString("en-GB", { ...o, hour: "2-digit", minute: "2-digit", hour12: true }).toLowerCase();
   const wd = d.toLocaleDateString("en-GB", { ...o, weekday: "long" }), day = +d.toLocaleDateString("en-GB", { ...o, day: "numeric" });
   const s = ["th", "st", "nd", "rd"][(day % 100 > 10 && day % 100 < 14) || day % 10 > 3 ? 0 : day % 10];
@@ -162,11 +167,11 @@ const mk = (w, cls, big) => {
 const openWork = (w) => go("/work/" + w.id);
 let qbtns = [];
 const addLabel = (w) => (w.status === "sold" ? "Sold Out" : w.status === "reserved" ? "Reserved" : !canBuy(w) ? "Enquire"
-  : bag.some((l) => l.id === w.id) ? "In Bag · View" : w.options.length ? "Choose Option" : "Add to Bag");
+  : bag.some((l) => l.id === w.id) ? "In Bag · View" : "Add to Bag");
 /* 有尺寸選項的作品先開抽屜選；其餘一鍵加入購物袋 */
 function buyBtn(w) {
   const b = el("button", "qb"); b.type = "button"; b.dataset.id = w.id; b.textContent = addLabel(w); b.classList.toggle("off", !canBuy(w));
-  b.onclick = () => { if (!canBuy(w) || w.options.length) { openWork(w); return; } if (bag.some((l) => l.id === w.id)) { go("/bag"); return; } addToBag(w, 0); };
+  b.onclick = () => { if (!canBuy(w)) { openWork(w); return; } if (bag.some((l) => l.id === w.id)) { go("/bag"); return; } if (w.options.length) { openWork(w); return; } addToBag(w, 0); };
   qbtns.push(b); return b;
 }
 let svbtns = [];
@@ -317,7 +322,7 @@ if (all.length) pick(0);
 
 /* ---------- Prints（商品列表）：實體相紙與數位檔分開購買 ---------- */
 function printCard(w) {
-  const f = el("figure"); const tile = el("div", "tile " + (w.height > w.width ? "p" : "l")); const im = mk(w); im.onclick = () => openWork(w); tile.appendChild(im); f.appendChild(tile);
+  const f = el("figure"); const tile = el("div", "tile " + (w.height > w.width ? "p" : "l")); const im = mk(w); tile.appendChild(im); f.appendChild(tile);
   const c = el("figcaption", "", `<span class="bn"></span><div class="tt2"></div><div class="mute sp"></div><div class="pr"></div><div class="pacts"></div>`);
   c.children[0].textContent = w.no; c.children[1].textContent = w.title;
   c.children[2].textContent = [w.spec, statusText(w)].filter(Boolean).join(" · ");
@@ -404,7 +409,6 @@ function syncSheet() {
   const b = $("#s-bag"); b.hidden = !buyable; b.textContent = inBag ? "View Bag" : "Add to Bag";
   const q = $("#s-enq"); q.hidden = buyable; q.href = enquireURL(w);
   q.textContent = w.status === "sold" ? "Sold Out — Enquire" : w.status === "reserved" ? "Reserved — Enquire" : "Price on Request — Enquire";
-  const n = $("#s-now"); n.hidden = !(w.buy && buyable); n.href = w.buy || "#"; n.textContent = "Buy Now ↗";
   T("#s-add", folder.includes(w.id) ? SAVED + " · Remove" : "Save for Later");
 }
 $("#s-opt").onchange = syncSheet;
@@ -761,7 +765,7 @@ document.addEventListener("click", (e) => {
 addEventListener("hashchange", onRoute);
 
 /* Dock：永遠固定在畫面底部 */
-const TABS = [["work", "Work", "/"], ["archive", "Archive", "/archive"], ["prints", "Prints", "/prints"], ["about", "About", "/about"], ["bag", "Bag", "/bag"]];
+const TABS = [["about", "About", "/about"], ["work", "Work", "/"], ["archive", "Archive", "/archive"], ["sheet", "Saved", "/sheet"], ["prints", "Prints", "/prints"], ["bag", "Bag", "/bag"]];
 const dock = $("#dock");
 TABS.forEach(([k, l, p], i) => {
   const b = el("button"); b.type = "button"; b.dataset.k = k; b.dataset.l = l;
@@ -771,7 +775,7 @@ $("#f-top").onclick = () => scrollTo({ top: 0, behavior: "smooth" });
 document.querySelectorAll(".fbtn").forEach((b) => { b.onclick = () => go("/sheet"); });
 function updCounts() {
   document.querySelectorAll(".fbtn").forEach((b) => { b.textContent = `${SAVED} (${folder.length})`; });
-  dock.querySelectorAll("button").forEach((b) => { b.textContent = b.dataset.k === "bag" ? `Bag (${bagCount()})` : b.dataset.l; b.classList.toggle("has", b.dataset.k === "bag" && bagCount() > 0); });
+  dock.querySelectorAll("button").forEach((b) => { b.textContent = b.dataset.k === "bag" ? `Bag (${bagCount()})` : b.dataset.k === "sheet" ? `${SAVED} (${folder.length})` : b.dataset.l; b.classList.toggle("has", b.dataset.k === "bag" && bagCount() > 0); });
   syncBuyBtns(); syncSave(true);
   if (sheetOpen) syncSheet();
 }

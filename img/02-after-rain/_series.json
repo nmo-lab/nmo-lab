@@ -9,7 +9,10 @@
       "price": "NT$ 450",
       "desc": "雨停之後的街角，地面反光是畫面的主角。",
       "spec": "JPG, Three Crops Included, Personal Use Licence",
-      "buy": "https://example.com/buy/4"
+      "buy": "https://example.com/buy/4",
+      "title_zh": "街角",
+      "desc_en": "A street corner after the rain stopped; the reflections on the ground are the star of the frame.",
+      "spec_zh": "JPG，含三種裁切，個人使用授權"
     },
     "c02-01.jpg": {
       "title": "Night Tram",
@@ -17,7 +20,10 @@
       "price": "NT$ 3,600",
       "desc": "末班電車經過時的長曝光。",
       "spec": "A2, Cotton Rag Paper, Custom Sizes on Request",
-      "buy": "https://example.com/buy/5"
+      "buy": "https://example.com/buy/5",
+      "title_zh": "夜行電車",
+      "desc_en": "A long exposure as the last tram passes.",
+      "spec_zh": "A2，棉質相紙，可客製尺寸"
     },
     "c09-01.jpg": {
       "title": "City Palette",
@@ -25,7 +31,11 @@
       "price": "NT$ 600",
       "desc": "整理自個人修圖流程的調色預設。",
       "spec": "12 Presets, Lightroom Classic and CC, Install Guide Included",
-      "buy": "https://example.com/buy/6"
+      "buy": "https://example.com/buy/6",
+      "title_zh": "城市色盤",
+      "desc_en": "Colour presets distilled from my personal editing workflow.",
+      "spec_zh": "12 組預設，適用 Lightroom Classic 與 CC，附安裝說明"
     }
-  }
+  },
+  "title_zh": "雨後"
 }

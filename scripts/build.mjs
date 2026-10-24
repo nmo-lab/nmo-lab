@@ -34,6 +34,9 @@ const warn = (m) => warnings.push(m);
 let sharp = null;
 try { sharp = (await import('sharp')).default; } catch { /* sharp 是選配 */ }
 
+/* 中英文欄位：xxx_zh／xxx_en 原樣帶到 works.json（由 assets/i18n.js 依語言挑選） */
+const langFields = (m) => Object.fromEntries(Object.entries(m || {}).filter(([k]) => /_(zh|en)$/.test(k)));
+
 /* ---------- 小工具 ---------- */
 const rel = (p) => path.relative(ROOT, p).split(path.sep).join('/');
 const exists = (p) => fs.access(p).then(() => true, () => false);
@@ -189,11 +192,12 @@ for (const dir of dirs) {
     works.push({
       id, title: m.title || prettify(f), type: m.type, price: m.price ?? '', desc: m.desc || '', spec: m.spec || '', buy: m.buy || '',
       edition: m.edition ?? null, sold: m.sold ?? 0, status: m.status || 'available', options: m.options || [], maxQty: m.maxQty ?? null,
+      ...langFields(m),
       ...out,
     });
   }
   if (!works.length) { warn(`${dir} 裡沒有圖片，已略過`); continue; }
-  series.push({ slug, title: meta.title || prettify(dir), date: meta.date || '', layout: meta.layout || 'hero', note: meta.note || '', works });
+  series.push({ slug, title: meta.title || prettify(dir), date: meta.date || '', layout: meta.layout || 'hero', note: meta.note || '', ...langFields(meta), works });
 }
 
 /* img/ 根目錄的圖片（例如 About 大圖）：處理後改寫 site.json 裡的路徑 */

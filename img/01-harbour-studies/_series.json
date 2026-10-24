@@ -5,7 +5,8 @@
   "note": "2024 年起在基隆港拍攝的系列。",
   "defaults": {
     "type": "physical",
-    "spec": "A3, Archival Pigment Print, Edition of 20"
+    "spec": "A3, Archival Pigment Print, Edition of 20",
+    "spec_zh": "A3，藝術微噴"
   },
   "works": {
     "ne02_01.jpg": {
@@ -19,17 +20,23 @@
       "options": [
         {
           "label": "A3 · Unframed",
-          "price": 3200
+          "price": 3200,
+          "label_zh": "A3 · 未裝框"
         },
         {
           "label": "A3 · Framed",
-          "price": 4400
+          "price": 4400,
+          "label_zh": "A3 · 已裝框"
         },
         {
           "label": "A2 · Unframed",
-          "price": 5200
+          "price": 5200,
+          "label_zh": "A2 · 未裝框"
         }
-      ]
+      ],
+      "title_zh": "港口，清晨",
+      "desc_en": "Shot at six in the morning in Keelung Harbour. The mist has not yet cleared, and the outlines of the boats slowly emerge from the light.",
+      "spec_zh": "A3，藝術微噴，簽名並編號"
     },
     "nn01_02.jpg": {
       "title": "Mooring Lines",
@@ -38,7 +45,10 @@
       "spec": "A3, Cotton Rag Paper, Unframed",
       "buy": "https://example.com/buy/2",
       "edition": 20,
-      "sold": 3
+      "sold": 3,
+      "title_zh": "纜繩",
+      "desc_en": "Mooring ropes at the quay, backlit at dusk.",
+      "spec_zh": "A3，棉質相紙，未裝框"
     },
     "nn04.jpg": {
       "title": "Harbour, Digital",
@@ -46,14 +56,19 @@
       "price": "NT$ 450",
       "desc": "同系列的數位檔版本。",
       "spec": "JPG, 6000 px Long Edge, Personal Use Licence",
-      "buy": "https://example.com/buy/3"
+      "buy": "https://example.com/buy/3",
+      "title_zh": "港口，數位檔",
+      "desc_en": "The digital version of the same series.",
+      "spec_zh": "JPG，長邊 6000 px，個人使用授權"
     },
     "nn03_02.jpg": {
       "title": "Fog Over Water",
       "price": "NT$ 3,000",
       "desc": "海面起霧的十分鐘。",
       "buy": "https://example.com/buy/7",
-      "status": "reserved"
+      "status": "reserved",
+      "title_zh": "海上起霧",
+      "desc_en": "Ten minutes of fog rolling over the sea."
     },
     "nn02_01.jpg": {
       "title": "Quay at Dusk",
@@ -61,7 +76,11 @@
       "desc": "日落後碼頭的最後一道光。",
       "buy": "https://example.com/buy/8",
       "edition": 20,
-      "sold": 20
+      "sold": 20,
+      "title_zh": "黃昏碼頭",
+      "desc_en": "The last light on the quay after sunset."
     }
-  }
+  },
+  "title_zh": "港口習作",
+  "note_en": "A series photographed in Keelung Harbour since 2024."
 }
